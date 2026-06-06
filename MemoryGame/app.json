@@ -3,7 +3,7 @@
     "name": "MemoryGame",
     "slug": "MemoryGame",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "memorygame",
     "userInterfaceStyle": "automatic",

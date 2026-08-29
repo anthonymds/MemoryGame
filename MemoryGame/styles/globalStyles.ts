@@ -32,13 +32,14 @@ export const globalStyles = StyleSheet.create(
         },
 
         title: {
-            fontSize: 34,
-            fontWeight: '800',
+            fontFamily: 'BalooExtraBold',
+            fontSize: 44,
             textAlign: 'center',
         },
 
         subtitle: {
-            fontSize: 16,
+            fontFamily: 'BalooSemiBold',
+            fontSize: 20,
             marginTop: 8,
             textAlign: 'center',
         },
@@ -88,7 +89,7 @@ export const globalStyles = StyleSheet.create(
         },
 
         buttonText: {
+            fontFamily: 'BalooBold',
             fontSize: 18,
-            fontWeight: '700',
         },
     });

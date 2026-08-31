@@ -1,15 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     Image,
     ImageSourcePropType,
     Pressable,
-    StyleSheet,
     Text,
     View,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { globalStyles } from '@/styles/globalStyles';
+import { gameScreenStyles } from '@/styles/gameScreenStyles'
 
 type GameImage = {
     id: string;
@@ -57,23 +56,115 @@ const objectImages: GameImage[] = [
     },
 ];
 
+const famousPlacesImages: GameImage[] = [
+    {
+        id: 'bigBen',
+        name: 'Big Ben',
+        source: require('../../assets/gamesImages/famousPlaces/bigBen.jpg'),
+    },
+    {
+        id: 'colosseum',
+        name: 'Coliseu',
+        source: require('../../assets/gamesImages/famousPlaces/colosseum.jpg'),
+    },
+    {
+        id: 'cristoRedentor',
+        name: 'Cristo Redentor',
+        source: require('../../assets/gamesImages/famousPlaces/cristoRedentor.jpg'),
+    },
+    {
+        id: 'eiffelTower',
+        name: 'Torre Eiffel',
+        source: require('../../assets/gamesImages/famousPlaces/eiffelTower.jpg'),
+    },
+    {
+        id: 'goldenGateBridge',
+        name: 'Golden Gate Bridge',
+        source: require('../../assets/gamesImages/famousPlaces/goldenGateBridge.jpg'),
+    },
+    {
+        id: 'greatWall',
+        name: 'Grande Muralha da China',
+        source: require('../../assets/gamesImages/famousPlaces/greatWall.jpg'),
+    },
+    {
+        id: 'mountFuji',
+        name: 'Monte Fuji',
+        source: require('../../assets/gamesImages/famousPlaces/mountFuji.jpg'),
+    },
+    {
+        id: 'notreDame',
+        name: 'Notre-Dame',
+        source: require('../../assets/gamesImages/famousPlaces/notreDame.jpg'),
+    },
+    {
+        id: 'osakaCastle',
+        name: 'Castelo de Osaka',
+        source: require('../../assets/gamesImages/famousPlaces/osakaCastle.jpg'),
+    },
+    {
+        id: 'pyramidsGiza',
+        name: 'Pirâmides de Gizé',
+        source: require('../../assets/gamesImages/famousPlaces/pyramidsGiza.jpg'),
+    },
+    {
+        id: 'statueLiberty',
+        name: 'Estátua da Liberdade',
+        source: require('../../assets/gamesImages/famousPlaces/statueLiberty.jpg'),
+    },
+    {
+        id: 'sydneyOperaHouse',
+        name: 'Sydney Opera House',
+        source: require('../../assets/gamesImages/famousPlaces/sydneyOperaHouse.jpg'),
+    },
+    {
+        id: 'tajMahal',
+        name: 'Taj Mahal',
+        source: require('../../assets/gamesImages/famousPlaces/tajMahal.jpeg'),
+    },
+    {
+        id: 'timesSquare',
+        name: 'Times Square',
+        source: require('../../assets/gamesImages/famousPlaces/timesSquare.jpg'),
+    },
+    {
+        id: 'towerPisa',
+        name: 'Torre de Pisa',
+        source: require('../../assets/gamesImages/famousPlaces/towerPisa.jpg'),
+    },
+];
+
 function shuffleArray<T>(array: T[]) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
 export default function GameScreen() {
-    const { mode } = useLocalSearchParams();
     const router = useRouter();
+
+    const {
+        mode,
+        imageCount,
+        imageDuration,
+    } = useLocalSearchParams();
+
+    const count = Number(imageCount);
+    const duration = Number(imageDuration);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const images = useMemo(() => {
-        if (mode === 'objetos') {
-            return shuffleArray(objectImages);
+        if (mode == 'lugaresFamosos') {
+            return shuffleArray(famousPlacesImages).slice(
+                0,
+                Math.min(count, famousPlacesImages.length)
+            );
         }
 
-        return [];
-    }, [mode]);
+        return shuffleArray(objectImages).slice(
+            0,
+            Math.min(count, objectImages.length)
+        );
+    }, [mode, count]);
 
     const currentImage = images[currentIndex];
 
@@ -82,130 +173,102 @@ export default function GameScreen() {
             return;
         }
 
-        if (currentIndex >= images.length - 1) {
-            setCurrentIndex(0);
+        setCurrentIndex((previousIndex) => {
+            if (previousIndex >= images.length - 1) {
+                return 0;
+            }
+
+            return previousIndex + 1;
+        });
+    }
+
+    useEffect(() => {
+        if (images.length === 0 || duration <= 0) {
             return;
         }
 
-        setCurrentIndex((previousIndex) => previousIndex + 1);
-    }
+        const timer = setInterval(() => {
+            handleNextImage();
+        }, duration * 1000);
 
-    if (mode !== 'objetos') {
-        return (
-            <View style={globalStyles.screen}>
-                <StatusBar style="light" />
+        return () => {
+            clearInterval(timer);
+        };
+    }, [duration, images.length]);
 
-                <View style={globalStyles.container}>
-                    <Text style={globalStyles.title}>Modo ainda não disponível</Text>
-                    <Text style={globalStyles.subtitle}>Modo selecionado: {String(mode)}</Text>
+    // if (mode !== 'objetos') {
+    //     return (
+    //         <View style={gameScreenStyles.screen}>
+    //             <StatusBar style="light" />
 
-                    <Pressable style={globalStyles.button} onPress={() => router.back()}>
-                        <Text style={globalStyles.buttonText}>Voltar</Text>
-                    </Pressable>
-                </View>
-            </View>
-        );
-    }
+    //             <Text style={gameScreenStyles.title}>
+    //                 Modo não disponível
+    //             </Text>
+
+    //             <Pressable
+    //                 style={gameScreenStyles.backButton}
+    //                 onPress={() => router.back()}
+    //             >
+    //                 <Text style={gameScreenStyles.backButtonText}>
+    //                     Voltar
+    //                 </Text>
+    //             </Pressable>
+    //         </View>
+    //     );
+    // }
 
     if (!currentImage) {
         return (
-            <View style={globalStyles.screen}>
+            <View style={gameScreenStyles.screen}>
                 <StatusBar style="light" />
 
-                <View style={globalStyles.container}>
-                    <Text style={globalStyles.title}>Nenhuma imagem encontrada</Text>
-                    <Text style={globalStyles.subtitle}>
-                        Adicione imagens no array objectImages.
-                    </Text>
+                <Text style={gameScreenStyles.title}>
+                    Nenhuma imagem disponível
+                </Text>
 
-                    <Pressable style={globalStyles.button} onPress={() => router.back()}>
-                        <Text style={globalStyles.buttonText}>Voltar</Text>
-                    </Pressable>
-                </View>
+                <Pressable
+                    style={gameScreenStyles.backButton}
+                    onPress={() => router.back()}
+                >
+                    <Text style={gameScreenStyles.backButtonText}>
+                        Voltar
+                    </Text>
+                </Pressable>
             </View>
         );
     }
 
     return (
-        <Pressable style={styles.screen} onPress={handleNextImage}>
+        <Pressable style={gameScreenStyles.screen}>
             <StatusBar style="light" />
 
-            <View style={styles.header}>
-                <Text style={styles.title}>Modo Objetos</Text>
-                <Text style={styles.counter}>
+            <View style={gameScreenStyles.header}>
+                <Text style={gameScreenStyles.title}>
+                    {mode}
+                </Text>
+
+                <Text style={gameScreenStyles.counter}>
                     {currentIndex + 1} / {images.length}
                 </Text>
             </View>
 
-            <View style={styles.imageContainer}>
+            <View style={gameScreenStyles.imageContainer}>
                 <Image
                     source={currentImage.source}
-                    style={styles.image}
+                    style={gameScreenStyles.image}
                     resizeMode="contain"
                 />
-
-                {/* <Text style={styles.imageName}>{currentImage.name}</Text> */}
-                <Text style={styles.hint}>Toque na tela para trocar</Text>
+                <Text style={gameScreenStyles.hint}>{currentImage.name}</Text>
             </View>
 
-            <Pressable style={styles.backButton} onPress={() => router.back()}>
-                <Text style={styles.backButtonText}>Voltar</Text>
+            <Pressable
+                style={gameScreenStyles.backButton}
+                onPress={() => router.back()}
+            >
+                <Text style={gameScreenStyles.backButtonText}>
+                    Voltar
+                </Text>
             </Pressable>
         </Pressable>
     );
 }
-
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        backgroundColor: '#0f172a',
-        padding: 24,
-        justifyContent: 'space-between',
-    },
-    header: {
-        alignItems: 'center',
-        marginTop: 40,
-    },
-    title: {
-        color: '#ffffff',
-        fontSize: 28,
-        fontWeight: 'bold',
-    },
-    counter: {
-        color: '#cbd5e1',
-        fontSize: 16,
-        marginTop: 8,
-    },
-    imageContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    image: {
-        width: '85%',
-        height: '55%',
-    },
-    imageName: {
-        color: '#ffffff',
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginTop: 24,
-    },
-    hint: {
-        color: '#94a3b8',
-        fontSize: 16,
-        marginTop: 8,
-    },
-    backButton: {
-        backgroundColor: '#334155',
-        paddingVertical: 14,
-        borderRadius: 14,
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    backButtonText: {
-        color: '#ffffff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-});

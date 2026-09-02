@@ -72,9 +72,9 @@ export default function Index() {
 
                 <View style={[globalStyles.card, isLandscape && globalStyles.cardLandscape,]}>
                     <ModeButton
-                        label="Lugares Famosos"
-                        icon="✈️"
-                        onPress={() => handleModePress('lugaresFamosos')}
+                        label="Lugares"
+                        icon="🏪"
+                        onPress={() => handleModePress('lugares')}
                     />
 
                     <ModeButton

@@ -10,24 +10,44 @@ import { useState } from 'react';
 import { globalStyles } from '@/styles/globalStyles';
 import GameConfigModal from '@/components/gameConfigModal';
 
+const modesWithConfig = [
+    'memory',
+    'colors',
+];
+
 export default function Index() {
+    const router = useRouter();
     const { width, height } = useWindowDimensions();
     const isLandscape = width > height;
-    const router = useRouter();
-    // Modo selecionado pelo usuário
-    const [selectedMode, setSelectedMode] = useState<string | null>(null);
-    // Controle de exibição do popup
     const [showConfig, setShowConfig] = useState(false);
-    // Configurações do jogo
-    const [imageCount, setImageCount] = useState(5);
-    const [imageDuration, setImageDuration] = useState(3);
+
+    const [selectedMode, setSelectedMode] =
+        useState<string | null>(null);
+
+    const [imageCount, setImageCount] =
+        useState(4);
+
+    const [imageDuration, setImageDuration] =
+        useState(10);
 
     function handleModePress(mode: string) {
-        setSelectedMode(mode);
-        setShowConfig(true);
+
+        if (modesWithConfig.includes(mode)) {
+            setSelectedMode(mode);
+            setShowConfig(true);
+            return;
+        }
+
+        router.push({
+            pathname: '/game/[mode]',
+            params: {
+                mode,
+            },
+        });
     }
 
     function handleStartGame() {
+
         if (!selectedMode) {
             return;
         }
@@ -44,51 +64,54 @@ export default function Index() {
         });
     }
 
-    function handleCloseConfig() {
-        setShowConfig(false);
-        setSelectedMode(null);
-    }
-
     return (
         <View style={globalStyles.screen}>
             <StatusBar style="light" />
-
-            <View style={[globalStyles.container, isLandscape && globalStyles.containerLandscape,]}>
+            <View
+                style={[
+                    globalStyles.container,
+                    isLandscape &&
+                    globalStyles.containerLandscape,
+                ]}
+            >
                 <View style={globalStyles.header}>
+                    <Text style={globalStyles.emoji}>
+                        🧠
+                    </Text>
 
                     <Text style={globalStyles.title}>
                         Jogo da Memória
                     </Text>
 
-                    <Text style={globalStyles.emoji}>
-                        🧠
-                    </Text>
-
                     <Text style={globalStyles.subtitle}>
-                        Escolha um modo para começar
+                        Escolha um desafio
                     </Text>
-
                 </View>
 
-                <View style={[globalStyles.card, isLandscape && globalStyles.cardLandscape,]}>
+                <View style={globalStyles.card}>
                     <ModeButton
-                        label="Lugares"
-                        icon="🏪"
-                        onPress={() => handleModePress('lugares')}
+                        label="Reflexo"
+                        icon="⚡"
+                        onPress={() => handleModePress('reflex')}
+                    />
+
+                    <ModeButton
+                        label="Memória Localização"
+                        icon="📍"
+                        onPress={() => handleModePress('memoryLocation')}
+                    />
+
+                    <ModeButton
+                        label="Memória Pares"
+                        icon="🃏"
+                        onPress={() => handleModePress('memoryPairs')}
                     />
 
                     <ModeButton
                         label="Cores"
                         icon="🎨"
-                        onPress={() => handleModePress('cores')}
+                        onPress={() => handleModePress('colors')}
                     />
-
-                    <ModeButton
-                        label="Objetos"
-                        icon="🧸"
-                        onPress={() => handleModePress('objetos')}
-                    />
-
                 </View>
             </View>
 
@@ -100,7 +123,8 @@ export default function Index() {
                 onChangeImageCount={setImageCount}
                 onChangeImageDuration={setImageDuration}
                 onStart={handleStartGame}
-                onClose={handleCloseConfig}
+                onClose={() => setShowConfig(false)
+                }
             />
         </View>
     );
@@ -117,12 +141,15 @@ function ModeButton({
     icon,
     onPress,
 }: ModeButtonProps) {
+
     return (
         <Pressable
             onPress={onPress}
+
             style={({ pressed }) => [
                 globalStyles.button,
-                pressed && globalStyles.buttonPressed,
+                pressed &&
+                globalStyles.buttonPressed,
             ]}
         >
             <Text style={globalStyles.buttonIcon}>

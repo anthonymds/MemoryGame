@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react';
 import {
     Image,
     Pressable,
-    StyleSheet,
     Text,
     View,
 } from 'react-native';
-import {
-    dailyPlacesImages,
-    GameImage,
-} from '@/data/gameImages';
+import { reflexGameStyles } from '@/styles/reflexGameStyles';
+import { dailyPlacesImages, GameImage } from '@/data/gameImages';
+import { useRouter } from 'expo-router';
 
 type MemoryLocationGameProps = {
     config: {
@@ -25,32 +23,22 @@ type MemoryCard = {
     found: boolean;
 };
 
-type GamePhase =
-    | 'memorizing'
-    | 'playing'
-    | 'finished';
-
 function shuffleArray<T>(array: T[]) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function MemoryLocationGame({
-    config,
-}: MemoryLocationGameProps) {
-
+export default function MemoryLocationGame({ config, }: MemoryLocationGameProps) {
+    const router = useRouter();
     const [cards, setCards] = useState<MemoryCard[]>([]);
-    const [phase, setPhase] = useState<GamePhase>('memorizing');
     const [targetCardId, setTargetCardId] = useState<string | null>(null);
+    const [showImages, setShowImages] = useState(true);
 
-    useEffect(() => {
+    function createRound() {
         const selectedImages =
             shuffleArray(dailyPlacesImages)
-                .slice(
-                    0,
-                    config.imageCount || 6
-                );
+                .slice(0, config.imageCount || 6);
 
-        const generatedCards =
+        const newCards =
             selectedImages.map(image => ({
                 id: image.id,
                 image,
@@ -58,9 +46,10 @@ export default function MemoryLocationGame({
                 found: false,
             }));
 
-        setCards(generatedCards);
+        setCards(newCards);
+        setShowImages(true);
 
-        const timer = setTimeout(() => {
+        setTimeout(() => {
             setCards(previous =>
                 previous.map(card => ({
                     ...card,
@@ -68,117 +57,108 @@ export default function MemoryLocationGame({
                 }))
             );
 
-            setPhase('playing');
-            setTimeout(() => {
-                selectNextCard(generatedCards);
-            }, 300);
-        }, (config.imageDuration ?? 5) * 1000);
-        return () => clearTimeout(timer);
+            selectTarget(newCards);
+            setShowImages(false);
 
-    }, []);
+        }, (config.imageDuration || 5) * 1000);
+    }
 
-    function selectNextCard(currentCards: MemoryCard[]) {
 
+
+    function selectTarget(currentCards: MemoryCard[]) {
         const availableCards = currentCards.filter(card => !card.found);
 
         if (availableCards.length === 0) {
-            setPhase('finished');
-            setTargetCardId(null);
+            createRound();
             return;
         }
 
         const randomCard =
             availableCards[
             Math.floor(
-                Math.random() * availableCards.length
+                Math.random() *
+                availableCards.length
             )
             ];
         setTargetCardId(randomCard.id);
     }
 
+    useEffect(() => { createRound(); }, []);
+
     function handleCardPress(selectedCard: MemoryCard) {
         if (
-            phase !== 'playing' ||
-            !targetCard
+            showImages ||
+            !targetCardId
         ) {
             return;
         }
 
-        if (selectedCard.id !== targetCard.id) {
+        if (
+            selectedCard.id !== targetCardId
+        ) {
             return;
         }
-        const updatedCards = cards.map(card => {
 
-            if (card.id === selectedCard.id) {
-                return {
-                    ...card,
-                    found: true,
-                    revealed: true,
-                };
-            }
-            return card;
-        });
+        const updatedCards =
+            cards.map(card => {
+                if (card.id === selectedCard.id) {
+                    return {
+                        ...card,
+                        found: true,
+                        revealed: true,
+                    };
+                }
+                return card;
+            });
+
         setCards(updatedCards);
-        setTimeout(() => {
-            selectNextCard(updatedCards);
-        }, 10);
-    }
-    const targetCard = cards.find(card => card.id === targetCardId);
-    return (
-        <View style={styles.container}>
 
-            <Text style={styles.title}>
+        const remaining =
+            updatedCards.filter(
+                card => !card.found
+            );
+
+        if (remaining.length === 0) {
+            setTimeout(() => {
+                createRound();
+            }, 700);
+            return;
+        }
+
+        selectTarget(updatedCards);
+    }
+
+    const targetCard = cards.find(card => card.id === targetCardId);
+
+    return (
+        <View style={reflexGameStyles.container}>
+            <Text style={reflexGameStyles.title}>
                 Memória de Localização
             </Text>
 
             {
-                phase === 'memorizing' && (
-                    <Text style={styles.message}>
-                        Memorize as posições
-                    </Text>
-                )
-            }
-
-            {
-                phase === 'playing' &&
                 targetCard && (
-                    <Text style={styles.message}>
-                        Encontre: {
-                            phase === 'playing' &&
-                            targetCard && (
-                                <Text style={styles.message}>
-                                    Encontre: {targetCard.image.name}
-                                </Text>
-                            )
-                        }
-                    </Text>
-                )
-            }
-            {
-                phase === 'finished' && (
-                    <Text style={styles.message}>
-                        Parabéns! Finalizado 🎉
+                    <Text style={reflexGameStyles.message}>
+                        Encontre: {targetCard.image.name}
                     </Text>
                 )
             }
 
-            <View style={styles.grid}>
+            <View style={reflexGameStyles.grid}>
                 {
                     cards.map(card => (
                         <Pressable
                             key={card.id}
-                            style={styles.card}
+                            style={reflexGameStyles.card}
                             onPress={() =>
                                 handleCardPress(card)
                             }
                         >
                             {
                                 card.revealed || card.found ?
-                                    <Image source={card.image.source} style={styles.image} />
+                                    <Image source={card.image.source} style={reflexGameStyles.image} />
                                     :
-                                    <Text
-                                        style={styles.question}
-                                    >
+                                    <Text style={reflexGameStyles.question}>
                                         ?
                                     </Text>
                             }
@@ -186,67 +166,14 @@ export default function MemoryLocationGame({
                     ))
                 }
             </View>
+            <Pressable
+                style={reflexGameStyles.backButton}
+                onPress={() => router.back()}
+            >
+                <Text style={reflexGameStyles.backButtonText}>
+                    Voltar
+                </Text>
+            </Pressable>
         </View>
     );
 }
-
-
-
-const styles = StyleSheet.create({
-
-    container: {
-        flex: 1,
-        backgroundColor: '#0f172a',
-        padding: 20,
-    },
-
-    title: {
-        color: '#fff',
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-
-    score: {
-        color: '#fff',
-        fontSize: 20,
-        textAlign: 'center',
-        marginTop: 10,
-    },
-
-    message: {
-        color: '#fff',
-        fontSize: 22,
-        textAlign: 'center',
-        marginVertical: 25,
-    },
-
-    grid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: 15,
-    },
-
-    card: {
-        width: 120,
-        height: 120,
-        borderRadius: 18,
-        backgroundColor: '#334155',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-
-    image: {
-        width: '90%',
-        height: '90%',
-        borderRadius: 15,
-    },
-
-    question: {
-        color: '#fff',
-        fontSize: 50,
-        fontWeight: 'bold',
-    },
-
-});

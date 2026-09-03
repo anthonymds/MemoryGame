@@ -1,6 +1,13 @@
 import { StyleSheet } from 'react-native';
 export const reflexGameStyles = StyleSheet.create({
 
+    message: {
+        color: '#fff',
+        fontSize: 22,
+        textAlign: 'center',
+        marginVertical: 25,
+    },
+
     backButton: {
         backgroundColor: '#334155',
         paddingVertical: 14,
@@ -51,8 +58,8 @@ export const reflexGameStyles = StyleSheet.create({
     },
 
     card: {
-        width: 250,
-        height: 250,
+        width: 200,
+        height: 200,
         backgroundColor: '#fff',
         borderRadius: 20,
         padding: 10,

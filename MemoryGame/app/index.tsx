@@ -13,6 +13,7 @@ import GameConfigModal from '@/components/gameConfigModal';
 const modesWithConfig = [
     'memory',
     'colors',
+    'memoryLocation'
 ];
 
 export default function Index() {

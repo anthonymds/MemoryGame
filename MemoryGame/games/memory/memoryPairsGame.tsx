@@ -30,7 +30,6 @@ export default function MemoryPairsGame({ config, }: MemoryPairsGameProps) {
     const router = useRouter();
     const [cards, setCards] = useState<MemoryCard[]>([]);
     const [firstCard, setFirstCard] = useState<MemoryCard | null>(null);
-    const [secondCard, setSecondCard] = useState<MemoryCard | null>(null);
     const [blocked, setBlocked] = useState(false);
 
     const createRound = useCallback(() => {
@@ -75,18 +74,12 @@ export default function MemoryPairsGame({ config, }: MemoryPairsGameProps) {
                     :
                     item
             );
-
         setCards(updatedCards);
 
         if (!firstCard) {
-            setFirstCard({
-                ...card,
-                flipped: true,
-            });
+            setFirstCard({ ...card, flipped: true });
             return;
         }
-
-        setSecondCard({ ...card, flipped: true });
         checkPair(firstCard, card, updatedCards);
     }
 
@@ -160,7 +153,6 @@ export default function MemoryPairsGame({ config, }: MemoryPairsGameProps) {
 
     function resetSelection() {
         setFirstCard(null);
-        setSecondCard(null);
         setBlocked(false);
     }
 

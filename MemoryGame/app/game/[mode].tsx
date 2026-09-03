@@ -2,13 +2,14 @@ import { useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 import ReflexGame from '@/games/reflex/reflexGame';
 import MemoryLocationGame from '@/games/memory/memoryLocationGame';
+import MemoryPairsGame from '@/games/memory/memoryPairsGame';
 const games = {
 
     reflex: ReflexGame,
 
     memoryLocation: MemoryLocationGame,
 
-    // memoryPairs: MemoryPairsGame,
+    memoryPairs: MemoryPairsGame,
 
     // colors: ColorGame,
 

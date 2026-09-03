@@ -21,15 +21,9 @@ export default function Index() {
     const { width, height } = useWindowDimensions();
     const isLandscape = width > height;
     const [showConfig, setShowConfig] = useState(false);
-
-    const [selectedMode, setSelectedMode] =
-        useState<string | null>(null);
-
-    const [imageCount, setImageCount] =
-        useState(4);
-
-    const [imageDuration, setImageDuration] =
-        useState(10);
+    const [selectedMode, setSelectedMode] = useState<string | null>(null);
+    const [imageCount, setImageCount] = useState(4);
+    const [imageDuration, setImageDuration] = useState(10);
 
     function handleModePress(mode: string) {
 

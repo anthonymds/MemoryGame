@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import ReflexGame from '@/games/reflex/reflexGame';
 import MemoryLocationGame from '@/games/memory/memoryLocationGame';
 import MemoryPairsGame from '@/games/memory/memoryPairsGame';
+import ColorGame from '@/games/colors/colorGame';
 const games = {
 
     reflex: ReflexGame,
@@ -11,7 +12,7 @@ const games = {
 
     memoryPairs: MemoryPairsGame,
 
-    // colors: ColorGame,
+    colors: ColorGame,
 
 };
 

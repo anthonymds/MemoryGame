@@ -12,7 +12,6 @@ import GameConfigModal from '@/components/gameConfigModal';
 
 const modesWithConfig = [
     'memory',
-    'colors',
     'memoryLocation'
 ];
 

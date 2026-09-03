@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Image,
     Pressable,
@@ -20,10 +20,7 @@ function shuffleArray<T>(array: T[]) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function ReflexGame({
-    config,
-}: ReflexGameProps) {
-
+export default function ReflexGame({ config, }: ReflexGameProps) {
     const router = useRouter();
     const [round, setRound] = useState(1);
     const [options, setOptions] = useState<GameImage[]>([]);
@@ -33,11 +30,8 @@ export default function ReflexGame({
 
     function createRound() {
 
-        const shuffled =
-            shuffleArray(dailyPlacesImages);
-
-        const selected =
-            shuffled.slice(0, 4);
+        const shuffled = shuffleArray(dailyPlacesImages);
+        const selected = shuffled.slice(0, 4);
 
         const answer =
             selected[
@@ -50,19 +44,15 @@ export default function ReflexGame({
         setCorrectImage(answer);
     }
 
-    useEffect(() => {
-        createRound();
-    }, []);
+    useEffect(() => { createRound(); }, []);
 
     function handleAnswer(image: GameImage) {
+
         if (!correctImage) {
             return;
         }
 
-        setRound(
-            previous => previous + 1
-        );
-
+        setRound(previous => previous + 1);
         createRound();
     }
 
@@ -119,6 +109,5 @@ export default function ReflexGame({
                 </Text>
             </Pressable>
         </View>
-
     );
 }

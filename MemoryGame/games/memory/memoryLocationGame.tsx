@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
     Image,
     Pressable,
@@ -33,10 +33,32 @@ export default function MemoryLocationGame({ config, }: MemoryLocationGameProps)
     const [targetCardId, setTargetCardId] = useState<string | null>(null);
     const [showImages, setShowImages] = useState(true);
 
-    function createRound() {
+    const selectTarget = useCallback(
+        (currentCards: MemoryCard[]) => {
+
+            const availableCards = currentCards.filter(card => !card.found);
+
+            if (availableCards.length === 0) {
+                return;
+            }
+
+            const randomCard =
+                availableCards[
+                Math.floor(
+                    Math.random() *
+                    availableCards.length
+                )
+                ];
+            setTargetCardId(randomCard.id);
+        }, []
+    );
+    const createRound = useCallback(() => {
         const selectedImages =
             shuffleArray(dailyPlacesImages)
-                .slice(0, config.imageCount || 6);
+                .slice(
+                    0,
+                    config.imageCount || 6
+                );
 
         const newCards =
             selectedImages.map(image => ({
@@ -48,7 +70,6 @@ export default function MemoryLocationGame({ config, }: MemoryLocationGameProps)
 
         setCards(newCards);
         setShowImages(true);
-
         setTimeout(() => {
             setCards(previous =>
                 previous.map(card => ({
@@ -61,29 +82,10 @@ export default function MemoryLocationGame({ config, }: MemoryLocationGameProps)
             setShowImages(false);
 
         }, (config.imageDuration || 5) * 1000);
-    }
 
+    }, [config.imageCount, config.imageDuration, selectTarget]);
 
-
-    function selectTarget(currentCards: MemoryCard[]) {
-        const availableCards = currentCards.filter(card => !card.found);
-
-        if (availableCards.length === 0) {
-            createRound();
-            return;
-        }
-
-        const randomCard =
-            availableCards[
-            Math.floor(
-                Math.random() *
-                availableCards.length
-            )
-            ];
-        setTargetCardId(randomCard.id);
-    }
-
-    useEffect(() => { createRound(); }, []);
+    useEffect(() => { createRound(); }, [createRound]);
 
     function handleCardPress(selectedCard: MemoryCard) {
         if (

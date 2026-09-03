@@ -91,19 +91,19 @@ export default function Index() {
 
                 <View style={globalStyles.card}>
                     <ModeButton
-                        label="Reflexo"
+                        label="Clicar na Imagem"
                         icon="⚡"
                         onPress={() => handleModePress('reflex')}
                     />
 
                     <ModeButton
-                        label="Memória Localização"
+                        label="Localizar Imagem"
                         icon="📍"
                         onPress={() => handleModePress('memoryLocation')}
                     />
 
                     <ModeButton
-                        label="Memória Pares"
+                        label="Juntar Pares"
                         icon="🃏"
                         onPress={() => handleModePress('memoryPairs')}
                     />

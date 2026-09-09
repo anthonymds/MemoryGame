@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 
 type MemoryPairsGameProps = {
     config: {
-        imageCount?: number;
+        pairCount?: number;
     };
 };
 
@@ -33,12 +33,12 @@ export default function MemoryPairsGame({ config, }: MemoryPairsGameProps) {
     const [blocked, setBlocked] = useState(false);
 
     const createRound = useCallback(() => {
+
+        setBlocked(false);
+        setFirstCard(null);
         const selectedImages =
             shuffleArray(dailyPlacesImages)
-                .slice(
-                    0,
-                    config.imageCount || 6
-                );
+                .slice(0, config.pairCount || 6);
 
         const pairs = [...selectedImages, ...selectedImages];
         const generatedCards =
@@ -51,7 +51,8 @@ export default function MemoryPairsGame({ config, }: MemoryPairsGameProps) {
                 }));
 
         setCards(generatedCards);
-    }, [config.imageCount]);
+
+    }, [config.pairCount]);
 
     useEffect(() => { createRound(); }, [createRound]);
 

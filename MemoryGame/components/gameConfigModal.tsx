@@ -1,13 +1,14 @@
 import { Pressable, Text, View } from 'react-native';
 import { gameConfigModalStyles } from '@/styles/gameConfigModalStyles';
-
 type gameConfigModalProps = {
     visible: boolean;
     mode: string | null;
     imageCount: number;
     imageDuration: number;
+    pairCount: number;
     onChangeImageCount: (count: number) => void;
     onChangeImageDuration: (duration: number) => void;
+    onChangePairCount: (count: number) => void;
     onStart: () => void;
     onClose: () => void;
 };
@@ -17,8 +18,10 @@ export default function gameConfigModal({
     mode,
     imageCount,
     imageDuration,
+    pairCount,
     onChangeImageCount,
     onChangeImageDuration,
+    onChangePairCount,
     onStart,
     onClose,
 }: gameConfigModalProps) {
@@ -31,13 +34,19 @@ export default function gameConfigModal({
         numeros: 'Números',
         cores: 'Cores',
         objetos: 'Objetos',
+        memoryLocation: 'Memória - Localização',
+        memoryPairs: 'Memória - Pares',
+        reflex: 'Reflexo',
     };
 
     function showImageSettings() {
         return [
             'memoryLocation',
-            'reflex',
         ].includes(mode ?? '');
+    }
+
+    function showPairSettings() {
+        return mode === 'memoryPairs';
     }
 
     return (
@@ -84,13 +93,7 @@ export default function gameConfigModal({
                                     </Pressable>
                                 ))}
                             </View>
-                        </>
-                    )
-                }
 
-                {
-                    showImageSettings() && (
-                        <>
                             <Text style={gameConfigModalStyles.label}>
                                 Tempo para memorizar
                             </Text>
@@ -124,6 +127,42 @@ export default function gameConfigModal({
                     )
                 }
 
+                {
+                    showPairSettings() && (
+                        <>
+                            <Text style={gameConfigModalStyles.label}>
+                                Quantidade de pares
+                            </Text>
+
+                            <View style={gameConfigModalStyles.options}>
+                                {[3, 4, 6, 8].map((amount) => (
+                                    <Pressable
+                                        key={amount}
+                                        onPress={() =>
+                                            onChangePairCount(amount)
+                                        }
+                                        style={[
+                                            gameConfigModalStyles.option,
+                                            pairCount === amount &&
+                                            gameConfigModalStyles.optionSelected,
+                                        ]}
+                                    >
+                                        <Text
+                                            style={[
+                                                gameConfigModalStyles.optionText,
+                                                pairCount === amount &&
+                                                gameConfigModalStyles.optionTextSelected,
+                                            ]}
+                                        >
+                                            {amount}
+                                        </Text>
+                                    </Pressable>
+                                ))}
+                            </View>
+                        </>
+                    )
+                }
+
                 <Pressable
                     style={gameConfigModalStyles.startButton}
                     onPress={onStart}
@@ -141,9 +180,7 @@ export default function gameConfigModal({
                         Voltar
                     </Text>
                 </Pressable>
-
             </View>
         </View>
     );
 }
-

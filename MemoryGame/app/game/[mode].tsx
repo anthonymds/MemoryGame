@@ -5,15 +5,10 @@ import MemoryLocationGame from '@/games/memory/memoryLocationGame';
 import MemoryPairsGame from '@/games/memory/memoryPairsGame';
 import ColorGame from '@/games/colors/colorGame';
 const games = {
-
     reflex: ReflexGame,
-
     memoryLocation: MemoryLocationGame,
-
     memoryPairs: MemoryPairsGame,
-
     colors: ColorGame,
-
 };
 
 export default function GameScreen() {
@@ -39,6 +34,7 @@ export default function GameScreen() {
             config={{
                 imageCount: Number(params.imageCount ?? 6),
                 imageDuration: Number(params.imageDuration ?? 5),
+                pairCount: Number(params.pairCount ?? 3)
             }}
         />
     );

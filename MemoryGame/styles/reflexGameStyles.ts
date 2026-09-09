@@ -21,6 +21,7 @@ export const reflexGameStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+
     container: {
         flex: 1,
         padding: 20,

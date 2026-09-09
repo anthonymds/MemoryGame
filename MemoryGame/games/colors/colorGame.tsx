@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { gameColorStyles } from '@/styles/gameColorStyles';
 import { colors, ColorOption } from '@/data/colorsOptions';
+import { useRouter } from 'expo-router';
 type ColorGameProps = {
     config?: any;
 };
@@ -42,6 +43,7 @@ function generateOptions(correctColor: ColorOption) {
 
 }
 export default function ColorGame({ config, }: ColorGameProps) {
+    const router = useRouter();
     const [options, setOptions] = useState<ColorOption[]>([]);
     const [word, setWord] = useState<ColorOption | null>(null);
     const [displayColor, setDisplayColor] = useState<ColorOption | null>(null);
@@ -140,6 +142,14 @@ export default function ColorGame({ config, }: ColorGameProps) {
                     ))
                 }
             </View>
+            <Pressable
+                style={gameColorStyles.backButton}
+                onPress={() => router.back()}
+            >
+                <Text style={gameColorStyles.backButtonText}>
+                    Voltar
+                </Text>
+            </Pressable>
         </View>
     );
 }

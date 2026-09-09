@@ -17,6 +17,7 @@ export const gameMemoryPairsStyles = StyleSheet.create({
     },
 
     grid: {
+        flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
@@ -43,6 +44,7 @@ export const gameMemoryPairsStyles = StyleSheet.create({
         fontSize: 50,
         fontWeight: 'bold',
     },
+
     backButton: {
         backgroundColor: '#334155',
         paddingVertical: 14,

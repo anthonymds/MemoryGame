@@ -37,6 +37,7 @@ export const gameColorStyles = StyleSheet.create({
     },
 
     options: {
+        flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
@@ -60,5 +61,18 @@ export const gameColorStyles = StyleSheet.create({
 
     darkText: {
         color: '#000',
+    },
+    backButton: {
+        backgroundColor: '#334155',
+        paddingVertical: 14,
+        borderRadius: 14,
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
+    backButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });

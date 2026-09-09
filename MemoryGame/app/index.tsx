@@ -12,7 +12,8 @@ import GameConfigModal from '@/components/gameConfigModal';
 
 const modesWithConfig = [
     'memory',
-    'memoryLocation'
+    'memoryLocation',
+    'memoryPairs'
 ];
 
 export default function Index() {
@@ -23,6 +24,7 @@ export default function Index() {
     const [selectedMode, setSelectedMode] = useState<string | null>(null);
     const [imageCount, setImageCount] = useState(4);
     const [imageDuration, setImageDuration] = useState(10);
+    const [pairCount, setPairCount] = useState(3);
 
     function handleModePress(mode: string) {
 
@@ -54,6 +56,7 @@ export default function Index() {
                 mode: selectedMode,
                 imageCount: String(imageCount),
                 imageDuration: String(imageDuration),
+                pairCount: String(pairCount)
             },
         });
     }
@@ -85,7 +88,7 @@ export default function Index() {
                 <View style={globalStyles.card}>
                     <ModeButton
                         label="Clicar na Imagem"
-                        icon="⚡"
+                        icon="⭕"
                         onPress={() => handleModePress('reflex')}
                     />
 
@@ -114,6 +117,8 @@ export default function Index() {
                 mode={selectedMode}
                 imageCount={imageCount}
                 imageDuration={imageDuration}
+                pairCount={pairCount}
+                onChangePairCount={setPairCount}
                 onChangeImageCount={setImageCount}
                 onChangeImageDuration={setImageDuration}
                 onStart={handleStartGame}
